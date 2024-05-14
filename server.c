@@ -44,7 +44,8 @@ int main(){
   //-------------------------------------CLIENT--------------------------------------
   if(c == 'c'){
 //    sa.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
-    char *string = "192.168.110.150";
+    char string[100];
+    scanf("%s", string);
     printf("%s, %lld\n", string, inet_addr(string));
     sa.sin_addr.S_un.S_addr = inet_addr(string);
 
@@ -76,7 +77,7 @@ int main(){
       printf("connect\n");
 //    sa.sin_addr.S_un.S_addr = inet_addr("192.168.110.150");
 
-      printf("connect type: %d\n", clientAddr.sin_addr.S_un.S_addr);
+//      printf("connect type: %d\n", clientAddr.sin_addr.S_un.S_addr);
       printf("connect type: %lld\n", clientAddr.sin_addr.S_un.S_addr);
 
       int iResult = 1;
