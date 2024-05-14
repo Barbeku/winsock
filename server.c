@@ -44,8 +44,8 @@ int main(){
   //-------------------------------------CLIENT--------------------------------------
   if(c == 'c'){
 //    sa.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
-    char string[100];
-    scanf("%s\n", string);
+    char *string;
+    scanf("%s\0", string);
     printf("%s, %lld\n", string, inet_addr(string));
     sa.sin_addr.S_un.S_addr = inet_addr(string);
 
