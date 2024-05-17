@@ -57,10 +57,10 @@ int main(){
 
   //-------------------------------------CLIENT--------------------------------------
   if(c == 'c'){
-//    char *string;
-//    scanf("%s\0", string);
-//    printf("%s, %lld\n", string, inet_addr(string));
-    char *string = "127.0.0.1";
+    char *string;
+    scanf("%s\0", string);
+    printf("%s, %lld\n", string, inet_addr(string));
+//    char *string = "127.0.0.1";
     sa.sin_addr.S_un.S_addr = inet_addr(string);
 
     connect(s, (struct sockaddr*)&sa, sizeof(sa));
