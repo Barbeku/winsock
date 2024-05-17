@@ -127,8 +127,8 @@ int main(){
 }
 
 void trackMove(){
-  HWND hwndd = GetForegroundWindow();
-  if(hwndd != window) return;
+//  HWND hwndd = GetForegroundWindow();
+//  if(hwndd != window) return;
 
   if     (GetKeyState(VK_UP) < 0)   playerPos--;
   else if(GetKeyState(VK_DOWN) < 0) playerPos++;
