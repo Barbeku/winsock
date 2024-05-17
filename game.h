@@ -42,7 +42,7 @@ void drawPlayer(HDC dc, int x, int y){
   SelectObject(dc, GetStockObject(DC_BRUSH));
   SetDCBrushColor(dc, RGB(0, 0, 0));
 
-  Rectangle(dc, x*CELL_SIZE, y*CELL_SIZE, x*CELL_SIZE + PLAYER_WIDTH*CELL_SIZE, y*CELL_SIZE+PLAYER_WIDTH*CELL_SIZE);
+  Rectangle(dc, x*CELL_SIZE, y*CELL_SIZE, x*CELL_SIZE + PLAYER_HEIGHT*CELL_SIZE, y*CELL_SIZE+PLAYER_WIDTH*CELL_SIZE);
 }
 
 void drawField(HDC dc, int player1Pos, int player2Pos){
@@ -81,7 +81,6 @@ void initWindow(HWND* hwnd, HDC* dc){
       NULL, NULL, NULL, NULL
   );
   *dc = GetDC(*hwnd);
-
 
   ShowWindow(*hwnd, SW_SHOWNORMAL);
 }

@@ -107,6 +107,8 @@ int main(){
         buf2[0] = playerPos;
         send(clientSocket, buf2, MAXLEN, 0);
 
+        printf("%d, %d\n", playerPos, buf[0]);
+
         if(iResult > 0){
           doGame(dc, playerPos, buf[0]);
         }
