@@ -1,3 +1,3 @@
 first:
-	gcc server.c -lws2_32
+	gcc server.c -lws2_32 -lgdi32
 	a.exe
