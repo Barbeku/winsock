@@ -10,9 +10,9 @@
 #define FIELD_HEIGHT 15
 
 #define PLAYER_WIDTH 1
-#define PLAYER_HEIGHT 2
+#define PLAYER_HEIGHT 3
 
-#define CELL_SIZE 30
+#define CELL_SIZE 10
 
 #include "game.h"
 
@@ -22,7 +22,7 @@ char buf2[MAXLEN];
 
 char playerPos = (int)(FIELD_HEIGHT / 2);
 
-int iterTime = 50;
+int iterTime = 20;
 HWND window;
 char text[MAXLEN];
 
@@ -101,7 +101,7 @@ int main(){
       printf("client addr: %lld\n", clientAddr.sin_addr.S_un.S_addr);
 
       int iResult = 1;
-      while(iResult > 0){
+      while(1){
         iResult = recv(clientSocket, buf, MAXLEN, 0);
 
         buf2[0] = playerPos;
@@ -116,6 +116,7 @@ int main(){
 
           prev = clock();
         }
+
         PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE);
         DispatchMessage(&msg);
       }

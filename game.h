@@ -1,7 +1,7 @@
 #include <windows.h>
 
-#define WINDOW_HEIGHT 500
-#define WINDOW_WIDTH 1200
+#define WINDOW_HEIGHT 300
+#define WINDOW_WIDTH 700
 
 int isClose = 0;
 RECT rct;
