@@ -50,9 +50,6 @@ DWORD WINAPI ThreadServer(){
 
     enemyPos = buf[0];
     printf("%d, %d\n", playerPos, enemyPos);
-
-    PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE);
-    DispatchMessage(&msg);
   }
   return 0;
 }
@@ -72,15 +69,17 @@ DWORD WINAPI ThreadClient(){
 
     printf("%d, %d\n", playerPos, enemyPos);
 
-    PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE);
-    DispatchMessage(&msg);
-
   }
   return 0;
 }
 
 DWORD WINAPI ThreadGame(){
   while (1) {
+    doGame(dc, playerPos, enemyPos);
+    PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE);
+    DispatchMessage(&msg);
+
+    Sleep(50);
   }
   return 0;
 }
