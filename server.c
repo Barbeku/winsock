@@ -23,22 +23,58 @@ char buf2[MAXLEN];
 char playerPos = (int)(FIELD_HEIGHT / 2);
 char enemyPos = (int)(FIELD_HEIGHT / 2);
 
+unsigned long long prev = 0;
 int iterTime = 20;
 HWND window;
 char text[MAXLEN];
 
 void trackMove();
 
+HWND hwnd;
+HDC dc;
+MSG msg;
+
 SOCKET socketToWork;
 
 DWORD WINAPI ThreadServer(){
-  while (1) {
+  while(1){
+    if(clock() - prev > iterTime){
+      trackMove();
+      prev = clock();
+    }
+
+    buf2[0] = playerPos;
+
+    send(socketToWork, buf2, MAXLEN, 0);
+    recv(socketToWork, buf, MAXLEN, 0);
+
+    enemyPos = buf[0];
+    printf("%d, %d\n", playerPos, enemyPos);
+
+    PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE);
+    DispatchMessage(&msg);
   }
   return 0;
 }
 
 DWORD WINAPI ThreadClient(){
-  while (1) {
+  int iResult = 1;
+  while(1){
+    if(clock() - prev > iterTime){
+      trackMove();
+      prev =  clock();
+    }
+
+    send(socketToWork, buf, MAXLEN, 0);
+    recv(socketToWork, buf2, MAXLEN, 0);
+
+    enemyPos = buf2[0];
+
+    printf("%d, %d\n", playerPos, enemyPos);
+
+    PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE);
+    DispatchMessage(&msg);
+
   }
   return 0;
 }
@@ -55,12 +91,11 @@ int main(){
   HANDLE hThread1, hThread2;
   DWORD dwThreadId1, dwThreadId2;
 
-//  system("cls");
+  //  system("cls");
   window = GetForegroundWindow();
 
   printf("active window: %d\n", window);
 
-  unsigned long long prev = 0;
 
   WSADATA ws;
   WSAStartup(MAKEWORD(2, 2), &ws); //WSAStartup - инициализирует испльзование сокетов(version, &ws)
@@ -75,43 +110,22 @@ int main(){
 
   printf("s - server, c - client\n");
   char c = getchar();
-
-  HWND hwnd;
-  HDC dc;
-  MSG msg;
   initWindow(&hwnd, &dc);
 
   //-------------------------------------CLIENT--------------------------------------
   if(c == 'c'){
-//    char *string;
-//    scanf("%s\0", string);
+    //    char *string;
+    //    scanf("%s\0", string);
     char *string = "127.0.0.1";
     sa.sin_addr.S_un.S_addr = inet_addr(string);
 
     connect(s, (struct sockaddr*)&sa, sizeof(sa));
+
     socketToWork = s;
+    hThread1 = CreateThread(NULL, 0, ThreadClient, NULL, 0, &dwThreadId1);
 
     printf("conn\n");
 
-    int iResult = 1;
-    while(1){
-      if(clock() - prev > iterTime){
-        trackMove();
-
-        send(s, buf, MAXLEN, 0);
-        iResult = recv(s, buf2, MAXLEN, 0);
-
-        if(iResult > 0)
-          ;
-//          printf("%d, %d\n", buf2[0], playerPos);
-
-        doGame(dc, buf2[0], playerPos);
-
-        PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE);
-        DispatchMessage(&msg);
-        prev =  clock();
-      }
-    }
   }
 
   //-------------------------------------SERVER--------------------------------------
@@ -126,34 +140,23 @@ int main(){
 
     if(clientSocket = accept(s, (struct sockaddr*)&clientAddr, &clientAddrSize)){
       printf("client addr: %lld\n", clientAddr.sin_addr.S_un.S_addr);
+
       socketToWork = clientSocket;
-
-//      hThread1 = CreateThread(NULL, 0, Thread1Func, NULL, 0, &dwThreadId1);
-
-      int iResult = 1;
-      while(1){
-        iResult = recv(clientSocket, buf, MAXLEN, 0);
-
-        buf2[0] = playerPos;
-        send(clientSocket, buf2, MAXLEN, 0);
-
-        printf("%d, %d\n", playerPos, buf[0]);
-
-        if(iResult > 0){
-          doGame(dc, playerPos, buf[0]);
-        }
-
-        if(clock() - prev > iterTime){
-          trackMove();
-
-          prev = clock();
-        }
-
-        PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE);
-        DispatchMessage(&msg);
-      }
+      hThread1 = CreateThread(NULL, 0, ThreadServer, NULL, 0, &dwThreadId1);
     }
   }
+  hThread2 = CreateThread(NULL, 0, ThreadGame, NULL, 0, &dwThreadId2);
+
+  if (hThread1 == NULL || hThread2 == NULL) {
+      printf("Failed to create thread\n");
+      return 1;
+  }
+
+  WaitForSingleObject(hThread1, INFINITE);
+  WaitForSingleObject(hThread2, INFINITE);
+
+  CloseHandle(hThread1);
+  CloseHandle(hThread2);
 
   return 0;
 }
