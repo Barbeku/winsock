@@ -36,6 +36,8 @@ MSG msg;
 
 SOCKET socketToWork;
 
+int gameIterTime = 10;
+
 DWORD WINAPI ThreadServer(){
   while(1){
     if(clock() - prev > iterTime){
@@ -79,7 +81,7 @@ DWORD WINAPI ThreadGame(){
     PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE);
     DispatchMessage(&msg);
 
-    Sleep(50);
+    Sleep(gameIterTime);
   }
   return 0;
 }
