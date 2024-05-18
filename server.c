@@ -113,10 +113,10 @@ int main(){
 
   //-------------------------------------CLIENT--------------------------------------
   if(c == 'c'){
-    char *string;
-    scanf("%s\0", string);
+    char ipAddres[100];
+    scanf("%s\0", ipAddres);
 //    char *string = "127.0.0.1";
-    sa.sin_addr.S_un.S_addr = inet_addr(string);
+    sa.sin_addr.S_un.S_addr = inet_addr(ipAddres);
 
     connect(s, (struct sockaddr*)&sa, sizeof(sa));
 
