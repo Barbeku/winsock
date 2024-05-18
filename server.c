@@ -1,7 +1,7 @@
 //gcc -o output.exe server.c -lws2_32 && output.exe
 //https://learn.microsoft.com/ru-ru/windows/win32/api/winsock2/
 #include <stdio.h>
-#include <unistd.h>
+//#include <unistd.h>
 #include <stdlib.h>
 #include <time.h>
 #include <winsock2.h>
@@ -21,6 +21,7 @@ char buf[MAXLEN];
 char buf2[MAXLEN];
 
 char playerPos = (int)(FIELD_HEIGHT / 2);
+char enemyPos = (int)(FIELD_HEIGHT / 2);
 
 int iterTime = 20;
 HWND window;
@@ -28,7 +29,32 @@ char text[MAXLEN];
 
 void trackMove();
 
+SOCKET socketToWork;
+
+DWORD WINAPI ThreadServer(){
+  while (1) {
+  }
+  return 0;
+}
+
+DWORD WINAPI ThreadClient(){
+  while (1) {
+  }
+  return 0;
+}
+
+DWORD WINAPI ThreadGame(){
+  while (1) {
+  }
+  return 0;
+}
+
+
+
 int main(){
+  HANDLE hThread1, hThread2;
+  DWORD dwThreadId1, dwThreadId2;
+
 //  system("cls");
   window = GetForegroundWindow();
 
@@ -57,13 +83,13 @@ int main(){
 
   //-------------------------------------CLIENT--------------------------------------
   if(c == 'c'){
-    char *string;
-    scanf("%s\0", string);
-    printf("%s, %lld\n", string, inet_addr(string));
-//    char *string = "127.0.0.1";
+//    char *string;
+//    scanf("%s\0", string);
+    char *string = "127.0.0.1";
     sa.sin_addr.S_un.S_addr = inet_addr(string);
 
     connect(s, (struct sockaddr*)&sa, sizeof(sa));
+    socketToWork = s;
 
     printf("conn\n");
 
@@ -76,6 +102,7 @@ int main(){
         iResult = recv(s, buf2, MAXLEN, 0);
 
         if(iResult > 0)
+          ;
 //          printf("%d, %d\n", buf2[0], playerPos);
 
         doGame(dc, buf2[0], playerPos);
@@ -99,6 +126,9 @@ int main(){
 
     if(clientSocket = accept(s, (struct sockaddr*)&clientAddr, &clientAddrSize)){
       printf("client addr: %lld\n", clientAddr.sin_addr.S_un.S_addr);
+      socketToWork = clientSocket;
+
+//      hThread1 = CreateThread(NULL, 0, Thread1Func, NULL, 0, &dwThreadId1);
 
       int iResult = 1;
       while(1){
@@ -129,8 +159,8 @@ int main(){
 }
 
 void trackMove(){
-//  HWND hwndd = GetForegroundWindow();
-//  if(hwndd != window) return;
+  HWND hwndd = GetForegroundWindow();
+  if(hwndd != window) return;
 
   if     (GetKeyState(VK_UP) < 0)   playerPos--;
   else if(GetKeyState(VK_DOWN) < 0) playerPos++;
